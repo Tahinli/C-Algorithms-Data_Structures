@@ -74,7 +74,7 @@ int main() {
     push(&stack, 5);
     int* value_ptr = get(&stack, 0);
     if (!value_ptr) {
-        printf("NonValid Index\n");
+        printf("Invalid Index\n");
         return -1;
     }
     printf("%d\n", *value_ptr);
@@ -90,7 +90,7 @@ int main() {
     int* popped = pop(&stack);
 
     if(!popped) {
-        printf("Couldn't Popped");
+        printf("Couldn't Pop");
         return -1;
     }
 
