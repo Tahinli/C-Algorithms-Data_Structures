@@ -11,17 +11,6 @@ struct Stack {
 };
 
 
-Stack new() {
-    Stack stack;
-
-    stack.top = -1;
-    stack.size = STACK_SIZE;
-    int elements[STACK_SIZE];
-    stack.elements = elements;
-
-    return stack;
-}
-
 int push(Stack* stack, int element) {
     if (stack->top +1 > stack->size) {
         return -1;
@@ -61,7 +50,12 @@ int search(Stack* stack, int element) {
 int main() {
     printf("Hello World\n");
 
-    Stack stack = new();
+    Stack stack;
+
+    stack.top = -1;
+    stack.size = STACK_SIZE;
+    int elements[STACK_SIZE];
+    stack.elements = elements;
 
     push(&stack, 123);
     push(&stack, 5);
