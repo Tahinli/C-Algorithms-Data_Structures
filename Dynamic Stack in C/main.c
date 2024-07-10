@@ -23,7 +23,7 @@ Stack new() {
 }
 
 int push(Stack* stack, int element) {
-    int* new_space_ptr = (int*)realloc(stack->elements, stack->size+sizeof(int));
+    int* new_space_ptr = (int*)realloc(stack->elements, (stack->size+1)*sizeof(int));
     if (!new_space_ptr) {
         return -1;
     }
@@ -38,10 +38,8 @@ int* pop(Stack* stack) {
         return NULL;
     }
     int* element = &stack->elements[stack->top];
-    int* new_space_ptr = (int*)realloc(stack->elements, stack->size-sizeof(int));
-    if (new_space_ptr) {
-        return NULL;
-    }
+    int* new_space_ptr = (int*)realloc(stack->elements, (stack->size-1) * sizeof(int));
+
     stack->size--;
     stack->top--;
     return element;
