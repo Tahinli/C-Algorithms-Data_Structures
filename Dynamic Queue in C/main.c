@@ -1,37 +1,37 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct Queue Queue;
 
-const int QUEUE_SIZE = 10;
-
 struct Queue {
     int* elements;
-    int last;
+    int total_element_count;
 };
 
 int* enqueue(Queue* queue, int element) {
-    if (queue->last <= 0) {
-        return NULL;
-    }
+    int* new_allocation = (int*)realloc(queue->elements, (queue->total_element_count + 1)*sizeof(int));
 
-    queue->elements[queue->last] = element;
-    queue->last--;
-    return &queue->elements[queue->last+1];
+
+    queue->elements[queue->total_element_count] = element;
+    queue->total_element_count++;
+    return &queue->elements[queue->total_element_count-1];
 }
 
 void* dequeue(Queue* queue, int* result) {
-    if(queue->last == QUEUE_SIZE-1) {
+    if(queue->total_element_count == 0) {
         return NULL;
     }
-    *result = queue->elements[QUEUE_SIZE-1];
-    memcpy(&queue->elements[queue->last+2], &queue->elements[queue->last+1], (QUEUE_SIZE-queue->last-1)*sizeof(int));
-    queue->last++;
+
+    *result = queue->elements[0];
+    memcpy(queue->elements, queue->elements+1, (queue->total_element_count-1)* sizeof(int));
+    queue->total_element_count--;
+    int* new_allocation = (int*)realloc(queue->elements, queue->total_element_count*sizeof(int));
     return queue;
 }
 
 int* get(Queue* queue, int index) {
-    if(index > QUEUE_SIZE-1 || index < queue->last) {
+    if(index >= queue->total_element_count) {
         return NULL;
     }
 
@@ -39,12 +39,13 @@ int* get(Queue* queue, int index) {
 }
 
 int search(Queue* queue, int value) {
-    int current_index = QUEUE_SIZE-1;
-    while(current_index >= queue->last) {
+    int current_index = 0;
+
+    while(current_index < queue->total_element_count) {
         if (queue->elements[current_index] == value) {
             return current_index;
         }
-        current_index--;
+        current_index++;
     }
     return -1;
 }
@@ -53,9 +54,15 @@ int main() {
     printf("Hello World\n");
 
     Queue queue;
-    queue.last = QUEUE_SIZE-1;
-    int elements[10];
-    queue.elements = elements;
+    
+    int* first_allocation = (int*)malloc(0);
+    if (!first_allocation) {
+        printf("Error: First Allocation");
+        return -1;
+    }
+
+    queue.elements = first_allocation;
+    queue.total_element_count = 0;
 
     int* result_enqueue = enqueue(&queue, 3);
     if(!result_enqueue) {
@@ -69,7 +76,7 @@ int main() {
         return -1;
     }
 
-    int* result_get = get(&queue, 9);
+    int* result_get = get(&queue, 0);
 
     if(!result_get) {
         printf("Error: Get\n");
